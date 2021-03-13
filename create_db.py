@@ -28,16 +28,16 @@ try:
             try:
                 sql_code = sql_create_db
                 cursor.execute(sql_code)
+                message = "Database successfully created."
+                print(message)
             except DuplicateDatabase:
                 message = "Database already exists."
                 print(message)
 except OperationalError as err:
-    message = f"An error ocurred: {err}."
+    message = f"An error occurred: {err}."
     print(message)
 else:
     connection.close()
-    message = "Database succesfully created."
-    print(message)
 
 connection = None
 try:
@@ -48,17 +48,16 @@ try:
             try:
                 sql_code = sql_create_tb_users
                 cursor.execute(sql_code)
+                message = "Table successfully created."
+                print(message)
             except DuplicateTable:
                 message = "Table already exists."
                 print(message)
 except OperationalError as err:
-    message = f"An error ocurred: {err}."
+    message = f"An error occurred: {err}."
     print(message)
 else:
     connection.close()
-    message = "Table succesfully created."
-    print(message)
-pass
 
 connection = None
 try:
@@ -69,14 +68,13 @@ try:
             try:
                 sql_code = sql_create_tb_msg
                 cursor.execute(sql_code)
+                message = "Table successfully created."
+                print(message)
             except DuplicateTable:
                 message = "Table already exists."
                 print(message)
 except OperationalError as err:
-    message = f"An error ocurred: {err}."
+    message = f"An error occurred: {err}."
     print(message)
 else:
     connection.close()
-    message = "Table succesfully created."
-    print(message)
-
