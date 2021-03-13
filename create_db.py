@@ -1,6 +1,6 @@
 from psycopg2 import connect, OperationalError
 from psycopg2.errors import DuplicateDatabase, DuplicateTable
-
+from models import User
 
 CONFIG = {
     "user": "postgres",
@@ -78,3 +78,8 @@ except OperationalError as err:
     print(message)
 else:
     connection.close()
+
+u = User("Anna", "password")
+u.save_user_to_db()
+
+
