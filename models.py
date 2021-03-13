@@ -100,8 +100,8 @@ class Message:
 
     def save_message_to_db(self, cursor):
         if self._id == -1:
-            sql = """INSERT INTO messages(from_id, to_id, text, creation_date)
-                            VALUES(%s, %s, %s, %s) RETURNING id"""
+            sql = """INSERT INTO messages(from_id, to_id, creation_date)
+                            VALUES(%s, %s, %s) RETURNING id"""
             today = date.today()
             values = (self.from_id, self.to_id, self.text, today)
             cursor.execute(sql, values)
