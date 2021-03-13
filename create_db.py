@@ -79,10 +79,11 @@ except OperationalError as err:
 else:
     connection.close()
 
-# connection = connect(**CONFIG2)
-# connection.autocommit = True
-# with connection:
-    # u = User("Anna", "password")
-    # u.save_user_to_db(cursor)
-# connection.close()
+connection = connect(**CONFIG2)
+connection.autocommit = True
+with connection:
+    with connection.cursor() as cursor:
+        u = User("Anna", "password")
+        u.save_user_to_db(cursor)
+connection.close()
 
