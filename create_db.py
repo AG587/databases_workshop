@@ -1,4 +1,6 @@
-from psycopg2 import connect, OperationalError, DatabaseError
+from psycopg2 import connect, OperationalError
+from psycopg2.errors import DuplicateDatabase, DuplicateTable
+
 
 CONFIG = {
     "user": "postgres",
@@ -6,19 +8,27 @@ CONFIG = {
     "host": "localhost"
 }
 
+CONFIG2 = {
+    "user": "postgres",
+    "password": "coderslab",
+    "host": "localhost",
+    "database": "workshop_db"
+}
+
 sql_create_db = "CREATE DATABASE workshop_db;"
-sql_create_tb_users = "CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(255), hashed_password VARCHAR(80);"
+sql_create_tb_users = "CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(255), hashed_password VARCHAR(80));"
 sql_create_tb_msg = "CREATE TABLE messages (id SERIAL PRIMARY KEY, from_id INT REFERENCES users(id), to_id INT REFERENCES users(id), creation_date TIMESTAMP);"
 
 connection = None
 try:
     connection = connect(**CONFIG)
+    connection.autocommit = True
     with connection:
         with connection.cursor() as cursor:
             try:
                 sql_code = sql_create_db
                 cursor.execute(sql_code)
-            except DatabaseError:
+            except DuplicateDatabase:
                 message = "Database already exists."
                 print(message)
 except OperationalError as err:
@@ -31,13 +41,14 @@ else:
 
 connection = None
 try:
-    connection = connect(**CONFIG)
+    connection = connect(**CONFIG2)
+    connection.autocommit = True
     with connection:
         with connection.cursor() as cursor:
             try:
                 sql_code = sql_create_tb_users
                 cursor.execute(sql_code)
-            except DatabaseError:
+            except DuplicateTable:
                 message = "Table already exists."
                 print(message)
 except OperationalError as err:
@@ -51,13 +62,14 @@ pass
 
 connection = None
 try:
-    connection = connect(**CONFIG)
+    connection = connect(**CONFIG2)
+    connection.autocommit = True
     with connection:
         with connection.cursor() as cursor:
             try:
                 sql_code = sql_create_tb_msg
                 cursor.execute(sql_code)
-            except DatabaseError:
+            except DuplicateTable:
                 message = "Table already exists."
                 print(message)
 except OperationalError as err:
