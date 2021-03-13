@@ -49,15 +49,16 @@ class User:
             loaded_user._id = id_
             loaded_user._hashed_password = hashed_password
             return loaded_user
+
     @staticmethod
-    def load_user_by_username(cursor, username_):
+    def load_user_by_username(cursor, username):
         sql = "SELECT id, username, hashed_password FROM users WHERE username=%s"
-        cursor.execute(sql, (username_,))
+        cursor.execute(sql, (username,))
         data = cursor.fetchone()
         if data:
             id_, username, hashed_password = data
             loaded_user = User(username)
-            loaded_user._username = username_
+            loaded_user._id = id_
             loaded_user._hashed_password = hashed_password
             return loaded_user
 
@@ -82,16 +83,20 @@ class User:
         return True
 
 class Message:
-    def __init__(self, from_id="", to_id="", text="", creation_date):
+    def __init__(self, from_id, to_id, text):
         self._id = -1
         self.from_id = from_id
         self.to_id = to_id
         self.text = text
-        self.creation_date = creation_date
+        self.creation_date = None
 
     @property
     def id(self):
         return self._id
+
+    @property
+    def creation_date(self):
+        return self._creation_date
 
     def save_message_to_db(self, cursor):
         if self._id == -1:
@@ -111,15 +116,19 @@ class Message:
             return True
 
     @staticmethod
-    def load_all_messages(cursor):
-        sql = "SELECT id, from_id, to_id, text, creation_date FROM messages"
+    def load_all_messages(cursor, user_id=None):
+        if user_id:
+            sql = "SELECT id, from_id, to_id, text, creation_date FROM messages WHERE to_id==%s"
+            cursor.execute(sql, (user_id,))
+        else:
+            sql = "SELECT id, from_id, to_id, text, creation_date FROM messages"
+            cursor.execute(sql)
         messages = []
-        cursor.execute(sql)
         for row in cursor.fetchall():
             id_, from_id, to_id, text, creation_date = row
-            loaded_message = Message()
+            loaded_message = Message(from_id, to_id, text)
             loaded_message._id = id_
-            loaded_message.from_id = from_id
-            loaded_message.to_id = to_id
+            loaded_message._creation_date = creation_date
             messages.append(loaded_message)
         return messages
+
